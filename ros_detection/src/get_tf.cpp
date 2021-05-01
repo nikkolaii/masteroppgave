@@ -7,17 +7,15 @@
 #include <tf/transform_listener.h>
 #include <std_msgs/Float64.h>
 #include <cmath>
-class getTF
+class PersonBroadcaster
 {
 public:
-getTF(){
-  dist_sub_ = nh_.subscribe("/Optimized_person_distance",1, &getTF::callback, this);
+PersonBroadcaster(){
+  dist_sub_ = nh_.subscribe("/Optimized_person_distance",1, &PersonBroadcaster::callback, this);
   path_pub_ = nh_.advertise<nav_msgs::Path>("person_path",100, true);
-  pub2_ = nh_.advertise<geometry_msgs::Point>("move_base_goal_topic",100,true);
+  move_base_pub_ = nh_.advertise<geometry_msgs::Point>("move_base_goal_topic",100,true);
   anglePub_ = nh_.advertise<std_msgs::Float64>("FOV_angle", 100, true);
-
 }
-
 void callback(const geometry_msgs::Point::ConstPtr& pointData)
 {
   personpose_.pose.position.x = pointData->x;
@@ -41,8 +39,7 @@ void callback(const geometry_msgs::Point::ConstPtr& pointData)
   posestamped_.pose.orientation = mappose_.pose.orientation;
   path_.poses.push_back(posestamped_);
   path_pub_.publish(path_);
-  pub2_.publish(posestamped_.pose.position);
-
+  move_base_pub_.publish(posestamped_.pose.position);
   FOV_angle.data  = -std::atan2(pointData->z, pointData->x) * 180 / 3.141592 +90;
   anglePub_.publish(FOV_angle);
 }
@@ -51,7 +48,7 @@ private:
   ros::NodeHandle nh_;
   ros::Subscriber dist_sub_;
   ros::Publisher path_pub_;
-  ros::Publisher pub2_;
+  ros::Publisher move_base_pub_;
   ros::Publisher anglePub_;
 
   tf::TransformBroadcaster br_;
@@ -68,7 +65,7 @@ private:
 int main(int argc, char **argv)
 {
   ros::init(argc,argv,"node");
-  getTF tfobj;
+  PersonBroadcaster tfobj;
   ros::spin();
   return 0;
 }
