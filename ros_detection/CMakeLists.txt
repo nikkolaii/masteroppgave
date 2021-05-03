@@ -163,6 +163,19 @@ add_executable(${PROJECT_NAME}_actionclient  src/lookforthis.cpp)
    ${catkin_LIBRARIES}
 )
 
+add_executable(${PROJECT_NAME}_sim_actionclient  src/actionclientsim.cpp)
+
+
+ target_link_libraries(${PROJECT_NAME}_sim_actionclient
+   ${catkin_LIBRARIES}
+)
+add_executable(${PROJECT_NAME}_distance  src/distance.cpp)
+
+
+ target_link_libraries(${PROJECT_NAME}_distance
+   ${catkin_LIBRARIES}
+)
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
