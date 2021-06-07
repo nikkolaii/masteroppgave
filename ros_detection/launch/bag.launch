@@ -34,6 +34,10 @@
    </node>
 
 <node pkg="rviz" type="rviz" name="rviz" />
+   <node name="detection_frame_node" pkg="ros_detection" type="ros_detection_node" />
+   <node name="personTF" pkg="ros_detection" type="ros_detection_tf" />
+   <node name="ControllerNode" pkg="ros_detection" type="ros_detection_actionclient" />
+
 
 
 </launch>

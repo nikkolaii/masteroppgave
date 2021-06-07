@@ -1,0 +1,36 @@
+#include "ros/ros.h"
+#include "nav_msgs/Path.h"
+#include "geometry_msgs/PoseStamped.h"
+#include "tf/transform_broadcaster.h"
+#include <tf/transform_listener.h>
+#include <std_msgs/Float64.h>
+#include <cmath>
+
+
+
+
+void f(ros::NodeHandle& nh, ros::Publisher& pub, tf::StampedTransform& stamp, tf::TransformListener& listener,
+geometry_msgs::Point& point, std_msgs::Float64& FOV_angle){
+listener.waitForTransform("person_detection_frame","person",ros::Time::now(),ros::Duration(3.0));
+listener.lookupTransform("person_detection_frame", "person", ros::Time(0), stamp);
+
+point.x = stamp.getOrigin().x();
+point.z = stamp.getOrigin().z();
+FOV_angle.data  = -std::atan2(point.z, point.x) * 180 / 3.141592 +90;
+pub.publish(FOV_angle);
+
+}
+int main(){
+geometry_msgs::Point point;
+ros::NodeHandle nh;
+ros::Publisher pub;
+pub = nh.advertise<std_msgs::Float64>("FOV_angle", 1, true);
+tf::StampedTransform stamp;
+tf::TransformListener listener;
+std_msgs::Float64 FOV_angle;
+while (true) {
+  f(nh, pub, stamp, listener, point, FOV_angle);
+
+}
+return 0;
+}

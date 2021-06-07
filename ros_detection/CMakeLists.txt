@@ -8,12 +8,9 @@ project(ros_detection)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
   message_generation
   roscpp
   tf
-  std_msgs
-  actionlib_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -53,7 +50,6 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    FloatVector.msg
-#   Message2.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -73,9 +69,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
  generate_messages(
    DEPENDENCIES
-   geometry_msgs
    tf
-   std_msgs
  )
 
 ################################################
@@ -107,7 +101,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(CATKIN_DEPENDS geometry_msgs message_runtime roscpp tf std_msgs)
+catkin_package(CATKIN_DEPENDS message_runtime roscpp tf)
 
 ###########
 ## Build ##
@@ -135,19 +129,44 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/ros_detection_node.cpp)
 
+# Node for the NTNU CYBORG:
+
 add_executable(${PROJECT_NAME}_node src/new.cpp)
-
-
- target_link_libraries(${PROJECT_NAME}_node
-   ${catkin_LIBRARIES}
-)
+target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES})
 
 add_executable(${PROJECT_NAME}_tf  src/get_tf.cpp)
+target_link_libraries(${PROJECT_NAME}_tf ${catkin_LIBRARIES})
+
+add_executable(${PROJECT_NAME}_actionclient  src/lookforthis.cpp)
+target_link_libraries(${PROJECT_NAME}_actionclient ${catkin_LIBRARIES})
+
+# -------------------------
 
 
- target_link_libraries(${PROJECT_NAME}_tf
+# Nodes used in simulation:
+
+add_executable(${PROJECT_NAME}_distance  src/distance.cpp)
+
+
+ target_link_libraries(${PROJECT_NAME}_distance
    ${catkin_LIBRARIES}
 )
+
+add_executable(${PROJECT_NAME}_relativeangle  src/relative_angle.cpp)
+
+
+ target_link_libraries(${PROJECT_NAME}_relativeangle
+   ${catkin_LIBRARIES}
+)
+
+
+add_executable(${PROJECT_NAME}_sim_actionclient  src/actionclientsim.cpp)
+
+
+ target_link_libraries(${PROJECT_NAME}_sim_actionclient
+   ${catkin_LIBRARIES}
+)
+
 
 add_executable(${PROJECT_NAME}_movebase  src/movebasetf.cpp)
 
@@ -156,25 +175,8 @@ add_executable(${PROJECT_NAME}_movebase  src/movebasetf.cpp)
    ${catkin_LIBRARIES}
 )
 
-add_executable(${PROJECT_NAME}_actionclient  src/lookforthis.cpp)
 
 
- target_link_libraries(${PROJECT_NAME}_actionclient
-   ${catkin_LIBRARIES}
-)
-
-add_executable(${PROJECT_NAME}_sim_actionclient  src/actionclientsim.cpp)
-
-
- target_link_libraries(${PROJECT_NAME}_sim_actionclient
-   ${catkin_LIBRARIES}
-)
-add_executable(${PROJECT_NAME}_distance  src/distance.cpp)
-
-
- target_link_libraries(${PROJECT_NAME}_distance
-   ${catkin_LIBRARIES}
-)
 
 
 ## Rename C++ executable without prefix
